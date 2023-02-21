@@ -25,7 +25,6 @@ def prewit(img , thre,use_thr):
     img_prewittx = cv2.filter2D(img_gaussian, -1, kernelx)
     img_prewitty = cv2.filter2D(img_gaussian, -1, kernely)
     edge = np.sqrt(img_prewittx**2 + img_prewitty**2)
-    print(np.unique(edge))
     if use_thr == 'on':
         edge = np.where(edge < thre , 0 ,255)
     return edge
