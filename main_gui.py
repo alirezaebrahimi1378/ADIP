@@ -92,7 +92,7 @@ class frame1(CTkFrame):
         self.frame_name = CTkLabel(self, text='transforms')
         self.frame_name.grid(row=0, column=0, columnspan=4, pady=10)
         ################################################# rotation #################################################
-        #functions
+        ####################  functions  ####################
         def bc1(self):
             value = self.sld1.get()
             figure = plt.figure(figsize=(11, 5), dpi=100)
@@ -114,7 +114,7 @@ class frame1(CTkFrame):
         def sl1(value):
             self.lbl2.configure(text=str(int(self.sld1.get())))
 
-        #widgets
+        ####################  widgets  ####################
         self.sld1 = CTkSlider(self,width = 200 ,from_ = 0 , to = 90,number_of_steps=90,command =sl1)
         self.sld1.grid(row=1 , column=1 , pady = 10)
         self.sld1.set(0)
@@ -126,7 +126,7 @@ class frame1(CTkFrame):
         self.btm1.grid(row = 1 , column = 3,sticky='e' , pady = 10, padx=10)
 
         ################################################# resize #################################################
-        #functions
+        ####################  functions  ####################
         def sl2(value):
             self.lbl4.configure(text=str(int(self.sld2.get())))
 
@@ -156,7 +156,7 @@ class frame1(CTkFrame):
             chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
             return None
 
-        #widgets
+        ####################  widgets  ####################
         self.lbl3 = CTkLabel(self , text='resampling scale')
         self.lbl3.grid(row=3 , column=0 , padx = 10)
         self.sld2 = CTkSlider(self , width = 200 , from_=1 , to=20 , number_of_steps=10,command=sl2)
@@ -173,7 +173,7 @@ class frame1(CTkFrame):
         self.btm2.grid(row=3 , column = 2,columnspan = 2,rowspan=2,sticky='e' ,padx = 10)
 
         ################################################# shift #################################################
-        #functions
+        ####################  functions  ####################
         def sl3(value):
             self.lbl8.configure(text=str(int(self.sld3.get())))
 
@@ -201,7 +201,7 @@ class frame1(CTkFrame):
             chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
             return None
 
-        #widgets
+        ####################  widgets  ####################
         self.lbl6 = CTkLabel(self , text='horizental shift')
         self.lbl6.grid(row = 5 , column=0 , padx = 10)
         self.lbl7 = CTkLabel(self, text='vertical shift')
@@ -218,7 +218,7 @@ class frame1(CTkFrame):
         self.btm3.grid(row=5, column=3 , rowspan = 2 , padx = 10,pady = 10 , sticky='e')
 
         ################################################# shear #################################################
-        # functions
+        ####################  functions  ####################
         def sl5(value):
             self.lbl11.configure(text=f'{self.sld5.get():.2f}')
 
@@ -243,7 +243,7 @@ class frame1(CTkFrame):
             chart = FigureCanvasTkAgg(figure, self.root)
             chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
             return None
-        # widgets
+        ####################  widgets  ####################
         self.lbl10 = CTkLabel(self , text='shear parameter').grid(row=7 , column=0)
         self.sld5 = CTkSlider(self , from_ = 0 , to=1 , number_of_steps=100 , command = sl5)
         self.sld5.grid(row=7 , column=1 , pady = 10)
@@ -259,7 +259,7 @@ class frame2(CTkFrame):
         self.frame_name = CTkLabel(self , text='image matching')
         self.frame_name.grid(row=0 , column = 0 , columnspan = 2 , pady = 10 , padx = 178)
         ################################################# image matching #################################################
-        #functions
+        ####################  functions  ####################
         def bc1(self):
             self.root.text_box.configure(state='normal')
             self.root.text_box.delete('0.0', 'end')
@@ -366,7 +366,7 @@ class frame2(CTkFrame):
             self.root.text_box.insert('end', '********************** test_rmse **********************\n')
             self.root.text_box.insert('end', f'{rmse_test}\n')
             self.root.text_box.configure(state='disable')
-        #widgets
+        ####################  widgets  ####################
         self.btm1 = CTkButton(self , text='start matching',command = lambda :bc1(self))
         self.btm1.grid(row = 1 ,column= 1 , rowspan = 2 , padx = 20)
         self.btm2 = CTkButton(self , text = 'calculate' , command = lambda: bc2(self))
@@ -387,7 +387,7 @@ class frame3(CTkFrame):
         self.frame_name = CTkLabel(self , text='true color - false color')
         self.frame_name.grid(row=0 , column = 0 , columnspan = 6,padx = 161 ,pady = 10)
         ################################################# false color #################################################
-        #functions
+        ####################  functions  ####################
         def bc1(self):
             image = rio.open(self.root.path5)
             img = image.read()
@@ -418,7 +418,7 @@ class frame3(CTkFrame):
             chart = FigureCanvasTkAgg(figure, self.root)
             chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
 
-        #widgets
+        ####################  widgets  ####################
         self.om1_value = StringVar(value='b1')
         self.om2_value = StringVar(value='b2')
         self.om3_value = StringVar(value='b3')
@@ -447,7 +447,7 @@ class frame4(CTkFrame):
         self.frame_name = CTkLabel(self , text='fourier')
         self.frame_name.grid(row=0 , column = 0 , columnspan = 4 , pady = 10)
         ################################################# fourier transform #################################################
-        #functions
+        ####################  functions  ####################
         def sl1(value):
             self.lbl2.configure(text=str(int(self.sld1.get())))
         def bc1(self):
@@ -499,7 +499,7 @@ class frame4(CTkFrame):
             chart = FigureCanvasTkAgg(figure, self.root)
             chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
 
-        #widgets
+        ####################  widgets  ####################
         self.radiovar = tkinter.IntVar(master=self, value=0)
         self.om1_value = StringVar(value='shift_fft_image')
         self.om2_value = StringVar(value='blur')
