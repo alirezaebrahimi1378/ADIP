@@ -66,7 +66,7 @@ class Window(CTk):
         self.frame5.grid(row=2, column=2, pady=20 , rowspan = 2,padx = 30 , sticky = 'nw')
         self.frame5.configure(border_width=3, border_color='#639DC1',corner_radius=10 ,fg_color='#343840')
 
-        self.text_box = CTkTextbox(self ,border_color='#639DC1',scrollbar_button_color='#639DC1',fg_color='#343840',corner_radius=10,border_width=3 , width = 600 , height=420)
+        self.text_box = CTkTextbox(self ,border_color='#639DC1',scrollbar_button_color='#639DC1',fg_color='#343840',corner_radius=10,border_width=3 , width = 600 , height=427)
         self.text_box.grid(row = 2 , column=0 , columnspan = 2 , rowspan = 2  ,sticky = 'n', pady = 20 , padx= 50)
 
     def show_plots(self):
@@ -105,7 +105,7 @@ class frame1(CTkFrame):
             plt.axis('off')
             figure.add_subplot(122)
             plt.imshow(res)
-            plt.title(f'image after rotation with angle of {value}')
+            plt.title(f'image after rotation with angle of {int(value)}')
             plt.axis('off')
             chart = FigureCanvasTkAgg(figure, self.root)
             chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
@@ -287,7 +287,8 @@ class frame2(CTkFrame):
                 counter = len(self.coordsx)
                 self.coords = np.vstack((np.array(self.coordsx) ,np.array(self.coordsy)))
                 if counter % 2 == 0:
-                    self.root.text_box.insert(index = 'end' ,text=f'coordinates of point in image one : [{self.coordsx[-2]},{self.coordsy[-2]}] / coordinates of point in image two : [{self.coordsx[-1]},{self.coordsy[-1]}]\n')
+                    self.root.text_box.insert(index = 'end' ,
+                                              text=f'coordinates of point in image one : [{self.coordsx[-2]},{self.coordsy[-2]}] / coordinates of point in image two : [{self.coordsx[-1]},{self.coordsy[-1]}]\n')
                 else:
                     point_number = int(counter / 2)
                     self.root.text_box.insert(index='end' , text = f'**************  point number {point_number}  **************\n')
