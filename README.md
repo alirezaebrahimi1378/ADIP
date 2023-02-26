@@ -1,4 +1,4 @@
-# _Final advanced image processing prigect_
+# _Final advanced image processing progect_
 ## installing dependencies
 #### after cloning repository please create a virtual enviroment and install needed packages using bellow code
 ``` 
