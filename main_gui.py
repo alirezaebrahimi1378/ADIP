@@ -17,7 +17,7 @@ from kernel import apply_kernel
 from corner_detection import harris, moravec , Sift , shi_tomasi
 from edge_detection import robert , prewit , sobel , canny
 from texture import features , NineD
-from segmentation import ther_based , watershed , k_means , mean_shift , fcm
+from segmentation import ther_based , watershed , k_means , mean_shift , fcm , edge_based
 
 
 
@@ -845,6 +845,22 @@ class frame5(CTkScrollableFrame):
                 plt.axis('off')
                 chart = FigureCanvasTkAgg(figure, self.root)
                 chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
+            elif method == 'edge_based' :
+                img = cv2.imread(self.root.path9)
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                mask = edge_based(img)
+                figure = plt.figure(figsize=(11, 5), dpi=100)
+                # figure.patch.set_facecolor('#639DC1')
+                figure.add_subplot(121)
+                plt.imshow(img)
+                plt.title('original image')
+                plt.axis('off')
+                figure.add_subplot(122)
+                plt.imshow(mask)
+                plt.title('segmented image using edge based method')
+                plt.axis('off')
+                chart = FigureCanvasTkAgg(figure, self.root)
+                chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
             elif method == 'k-means':
                 img = cv2.imread(self.root.path10)
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -903,7 +919,7 @@ class frame5(CTkScrollableFrame):
         self.lbl15.grid(row = 12 , column = 0 , columnspan = 5 , pady = 10)
         self.lbl16 = CTkLabel(self , text = 'method:')
         self.lbl16.grid(row = 13 , column = 0)
-        self.om5 = CTkOptionMenu(self , values = ['threshold based' , 'watershed' , 'k-means' , 'mean-shift' , 'FCM'] ,variable=self.om5_value)
+        self.om5 = CTkOptionMenu(self , values = ['threshold based' , 'watershed','edge_based' , 'k-means' , 'mean-shift' , 'FCM'] ,variable=self.om5_value)
         self.om5.grid(row = 13 , column = 1, sticky = 'w')
         self.btm5 = CTkButton(self , text = 'show result' , command = lambda:bc5(self))
         self.btm5.grid(row = 13 , column = 3 , columnspan = 2)
@@ -915,4 +931,3 @@ class frame5(CTkScrollableFrame):
         self.lbl18.grid(row = 14 , column = 4)
 app = Window()
 app.mainloop()
-
