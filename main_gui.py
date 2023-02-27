@@ -719,7 +719,7 @@ class frame5(CTkScrollableFrame):
         self.cb1 = CTkCheckBox(self , text = 'use threshold to create mask' ,variable=self.checkvar , onvalue='on' ,offvalue='off')
         self.cb1.grid(row = 8 , column = 0 , columnspan = 2)
         self.btm2 = CTkButton(self , text = 'edge detection' , command = lambda:bc2(self))
-        self.btm2.grid(row = 8 , column = 2 , columnspan = 3 , pady = 10)
+        self.btm2.grid(row = 8 , column = 3 , columnspan = 2 , pady = 10)
         ################################################# texture #################################################
         ####################  functions  ####################
         def bc3(self):
@@ -924,10 +924,10 @@ class frame5(CTkScrollableFrame):
         self.btm5 = CTkButton(self , text = 'show result' , command = lambda:bc5(self))
         self.btm5.grid(row = 13 , column = 3 , columnspan = 2)
         self.lbl17 = CTkLabel(self , text = 'number of clusters:')
-        self.lbl17.grid(row = 14 , column = 0 , columnspan = 2)
+        self.lbl17.grid(row = 14 , column = 0 , columnspan = 2 , sticky = 'w')
         self.sld6 = CTkSlider(self, width=200, from_=3, to=8, number_of_steps=6, command=sl6)
         self.sld6.grid(row=14, column=2 , columnspan = 2)
         self.lbl18 = CTkLabel(self , text = str(int(self.sld6.get())))
-        self.lbl18.grid(row = 14 , column = 4)
+        self.lbl18.grid(row = 14 , column = 4,pady = 10 , sticky = 'w')
 app = Window()
 app.mainloop()
