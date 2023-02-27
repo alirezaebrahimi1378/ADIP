@@ -65,7 +65,10 @@ def features(img,direction):
     for i in range(0 , 6):
         for j in range(0 , 6):
             Energy = Energy + pro[i , j]**2
-            Entropy = Entropy + (pro[i , j] *np.log2(pro[i,j]))
+            entropy =  pro[i , j] *np.log2(pro[i,j])
+            if str(entropy) == 'nan' :
+                entropy = 0
+            Entropy = Entropy + entropy
             Contrast = Contrast + ((abs(i - j)**2) * pro[i , j])
             Corr = Corr + ((i*j*pro[i , j]) - mx*my)
             if i != j :
