@@ -1,14 +1,10 @@
 from sklearn.cluster import MeanShift, estimate_bandwidth
 from skimage.filters import threshold_otsu
 import cv2 as cv
-import os
-from os import listdir
-from os.path import isfile, join
-import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-
-
+from skimage.feature import canny
+from scipy import ndimage as ndi
+from skimage import morphology
 
 
 
@@ -70,7 +66,13 @@ def mean_shift(img):
     mask = np.uint8(mask)
     return mask
 
-
+def edge_based(img):
+    img = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+    image = img.copy()
+    edge = canny(image)
+    fill = ndi.binary_fill_holes(edge)
+    seg = morphology.remove_small_objects(fill, 10)
+    return seg
 class FCM():
     def __init__(self, image, image_bit, n_clusters, m, epsilon, max_iter):
         self.image = image
