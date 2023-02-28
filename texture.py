@@ -76,7 +76,7 @@ def features(img,direction):
 
     Corr = Corr/(sigmax * sigmay)
 
-    return Energy , Entropy , Max_pro , Contrast , Inv_diff_mom , Corr
+    return co , Energy , Entropy , Max_pro , Contrast , Inv_diff_mom , Corr
 
 def NineD(img , dim):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

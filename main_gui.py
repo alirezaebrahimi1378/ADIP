@@ -624,7 +624,8 @@ class frame5(CTkScrollableFrame):
         self.om3_value = StringVar(value='L5E5/E5L5')
         self.om4_value = StringVar(value='7')
         self.om5_value = StringVar(value='watershed')
-        self.checkvar = StringVar(value = 'on')
+        self.checkvar1 = StringVar(value = 'on')
+        self.checkvar2 = StringVar(value='on')
         self.lbl1 = CTkLabel(self , text = 'method:')
         self.lbl1.grid(row = 1 , column = 0)
         self.om1 = CTkOptionMenu(self,width = 100 ,values=['harris','moravec','sift' , 'shi-tomasi'], variable=self.om1_value)
@@ -647,7 +648,7 @@ class frame5(CTkScrollableFrame):
             self.lbl18.configure(text=str(int(self.sld6.get())))
         def bc2(self):
             method = self.radiovar.get()
-            use_thr = self.checkvar.get()
+            use_thr = self.checkvar1.get()
             methods = [0 , 'robert' , 'prewitt' , 'sobel' , 'canny']
             img = cv2.imread(self.root.path1)
             if method == 1 :
@@ -716,7 +717,7 @@ class frame5(CTkScrollableFrame):
         self.sld5.grid(row=7, column=2,columnspan = 2)
         self.lbl12 = CTkLabel(self, text=str(int(self.sld5.get())))
         self.lbl12.grid(row=7, column=4, sticky='w')
-        self.cb1 = CTkCheckBox(self , text = 'use threshold to create mask' ,variable=self.checkvar , onvalue='on' ,offvalue='off')
+        self.cb1 = CTkCheckBox(self , text = 'use threshold to create mask' ,variable=self.checkvar1 , onvalue='on' ,offvalue='off')
         self.cb1.grid(row = 8 , column = 0 , columnspan = 2)
         self.btm2 = CTkButton(self , text = 'edge detection' , command = lambda:bc2(self))
         self.btm2.grid(row = 8 , column = 3 , columnspan = 2 , pady = 10)
@@ -724,11 +725,12 @@ class frame5(CTkScrollableFrame):
         ####################  functions  ####################
         def bc3(self):
             dialog = CTkInputDialog(text="please type full path to your image:", title="input image")
+            show_co = self.checkvar2.get()
             path = dialog.get_input()
             img = cv2.imread(path)
             direction = self.om2.get()
             dim = self.om3.get()
-            Energy , Entropy , Max_pro , Contrast , Inv_diff_mom , Corr = features(img , direction)
+            co , Energy , Entropy , Max_pro , Contrast , Inv_diff_mom , Corr = features(img , direction)
             self.root.text_box.configure(state='normal')
             self.root.text_box.delete('0.0', 'end')
             self.root.text_box.insert('end', '********************** energy **********************\n')
@@ -749,8 +751,11 @@ class frame5(CTkScrollableFrame):
             figure = plt.figure(figsize=(11, 5), dpi=100)
             # figure.patch.set_facecolor('#639DC1')
             figure.add_subplot(121)
-            plt.imshow(img)
-            plt.title('original image')
+            if show_co == 'off':
+                plt.imshow(img)
+                plt.title('original image')
+            else :
+                plt.imshow(co)
             plt.axis('off')
             figure.add_subplot(122)
             plt.imshow(Dim)
@@ -759,10 +764,11 @@ class frame5(CTkScrollableFrame):
             chart = FigureCanvasTkAgg(figure, self.root)
             chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
         def bc4(slef):
+            show_co = self.checkvar2.get()
             img = cv2.imread(self.root.path8)
             direction = self.om2.get()
             dim = self.om3.get()
-            Energy , Entropy , Max_pro , Contrast , Inv_diff_mom , Corr = features(img, direction)
+            co , Energy , Entropy , Max_pro , Contrast , Inv_diff_mom , Corr = features(img, direction)
             self.root.text_box.configure(state='normal')
             self.root.text_box.delete('0.0', 'end')
             self.root.text_box.insert('end', '********************** energy **********************\n')
@@ -782,8 +788,11 @@ class frame5(CTkScrollableFrame):
             figure = plt.figure(figsize=(11, 5), dpi=100)
             # figure.patch.set_facecolor('#639DC1')
             figure.add_subplot(121)
-            plt.imshow(img)
-            plt.title('original image')
+            if show_co == 'off':
+                plt.imshow(img)
+                plt.title('original image')
+            else:
+                plt.imshow(co)
             plt.axis('off')
             figure.add_subplot(122)
             plt.imshow(Dim)
@@ -802,10 +811,12 @@ class frame5(CTkScrollableFrame):
         self.lbl14.grid(row=10, column=2)
         self.om3 = CTkOptionMenu(self, width=100, values=['L5E5/E5L5' , 'L5R5/R5L5' , 'E5S5/S5E5' , 'S5S5' , 'R5R5' , 'L5S5/S5L5' , 'E5E5' , 'E5R5/R5E5' , 'S5R5/R5S5'],variable=self.om3_value)
         self.om3.grid(row=10, column=3 ,columnspan = 2 , padx=10, pady=10)
-        self.btm3 = CTkButton(self , text = 'input a new picture' ,command = lambda : bc3(self))
-        self.btm3.grid(row = 11 , column = 0 , columnspan = 2)
-        self.btm4 = CTkButton(self , text = 'predefined image' , command = lambda: bc4(self))
-        self.btm4.grid(row = 11 , column = 3 , columnspan = 2)
+        self.cb1 = CTkCheckBox(self, text='show co_occurrence',width = 70 ,variable=self.checkvar2, onvalue='on', offvalue='off')
+        self.cb1.grid(row=11, column=3 , columnspan = 2)
+        self.btm3 = CTkButton(self , text = 'new picture',width = 50 ,command = lambda : bc3(self))
+        self.btm3.grid(row = 11 , column = 0 )
+        self.btm4 = CTkButton(self , text = 'predefined image' ,width = 50 ,command = lambda: bc4(self))
+        self.btm4.grid(row = 11 , column = 1 , columnspan = 2 )
         ################################################# image segmentation #################################################
         ####################  functions  ####################
         def bc5(self):
