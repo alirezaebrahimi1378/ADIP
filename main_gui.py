@@ -263,19 +263,19 @@ class frame2(CTkFrame):
         def bc1(self):
             self.root.text_box.configure(state='normal')
             self.root.text_box.delete('0.0', 'end')
-            figure = plt.figure(figsize=(11, 5), dpi=100)
+            self.figure = plt.figure(figsize=(11, 5), dpi=100)
             # figure.patch.set_facecolor('#639DC1')
             img1 = cv2.imread(self.root.path2)
             img2 = cv2.imread(self.root.path3)
-            figure.add_subplot(121)
+            self.ax1 = self.figure.add_subplot(121)
             plt.imshow(img1)
             plt.title('first image')
             plt.axis('off')
-            figure.add_subplot(122)
+            self.ax2 = self.figure.add_subplot(122)
             plt.imshow(img2)
             plt.title('second image')
             plt.axis('off')
-            chart = FigureCanvasTkAgg(figure, self.root)
+            chart = FigureCanvasTkAgg(self.figure, self.root)
             chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
             self.coordsx = []
             self.coordsy = []
@@ -285,15 +285,29 @@ class frame2(CTkFrame):
                 self.coordsx.append(X_coordinate)
                 self.coordsy.append(Y_coordinate)
                 counter = len(self.coordsx)
-                self.coords = np.vstack((np.array(self.coordsx) ,np.array(self.coordsy)))
+                coords = np.vstack((np.array(self.coordsx) ,np.array(self.coordsy)))
+                self.coords = np.transpose(coords)
+                coords2 = self.coords[::2]
+                coords1 = self.coords[1::2]
                 if counter % 2 == 0:
-                    self.root.text_box.insert(index = 'end' ,
-                                              text=f'coordinates of point in image one : [{self.coordsx[-2]},{self.coordsy[-2]}] / coordinates of point in image two : [{self.coordsx[-1]},{self.coordsy[-1]}]\n')
+                    self.root.text_box.insert(index = 'end' ,text=f'coordinates of point in image one : [{self.coordsx[-2]},{self.coordsy[-2]}] / coordinates of point in image two : [{self.coordsx[-1]},{self.coordsy[-1]}]\n')
+                    coord = np.array(coords1)
+                    x = coord[: , 0]
+                    y = coord[: , 1]
+                    self.ax2.plot(x , y ,'*',color = 'red')
+                    chart = FigureCanvasTkAgg(self.figure, self.root)
+                    chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
                 else:
                     point_number = int(counter / 2)
+                    coord = np.array(coords2)
+                    x = coord[:, 0]
+                    y = coord[:, 1]
+                    self.ax1.plot(x, y,'*',color = 'blue')
+                    chart = FigureCanvasTkAgg(self.figure, self.root)
+                    chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
                     self.root.text_box.insert(index='end' , text = f'**************  point number {point_number}  **************\n')
                     self.root.text_box.insert(index='end',text='point of image one have been selected\n')
-            cid = figure.canvas.mpl_connect('button_press_event', onclick)
+            cid = self.figure.canvas.mpl_connect('button_press_event', onclick)
 
         def bc2(self):
             method = self.radiovar.get()
