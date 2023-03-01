@@ -169,7 +169,7 @@ class frame1(CTkFrame):
         self.om1_value = StringVar(value = 'nearest')
         self.om1 = CTkOptionMenu(self, values=['nearest' , 'linear' ,'cubic'] , variable=self.om1_value)
         self.om1.grid(row=4 , column = 1,pady = 10)
-        self.btm2 = CTkButton(self,text='rescale' , command=lambda:bc2(self),width=70)
+        self.btm2 = CTkButton(self,text='resample' , command=lambda:bc2(self),width=70)
         self.btm2.grid(row=3 , column = 2,columnspan = 2,rowspan=2,sticky='e' ,padx = 10)
 
         ################################################# shift #################################################
@@ -310,77 +310,84 @@ class frame2(CTkFrame):
             cid = self.figure.canvas.mpl_connect('button_press_event', onclick)
 
         def bc2(self):
-            method = self.radiovar.get()
-            if method == 1 :
-                coords1 = np.empty((round(self.coords.shape[1] / 2), 2))
-                coords2 = np.empty((round(self.coords.shape[1] / 2), 2))
-                m = 0
-                n = 0
+            try :
+                method = self.radiovar.get()
+                if method == 1 :
+                    coords1 = np.empty((round(self.coords.shape[1] / 2), 2))
+                    coords2 = np.empty((round(self.coords.shape[1] / 2), 2))
+                    m = 0
+                    n = 0
 
-                for i in range(self.coords.shape[1]):
-                    if i % 2 == 0:
-                        coords1[m, :] = self.coords[:, i]
-                        m = m + 1
-                    else:
-                        coords2[n, :] = self.coords[:, i]
-                        n = n + 1
+                    for i in range(self.coords.shape[1]):
+                        if i % 2 == 0:
+                            coords1[m, :] = self.coords[:, i]
+                            m = m + 1
+                        else:
+                            coords2[n, :] = self.coords[:, i]
+                            n = n + 1
 
-                coords1 = np.array(coords1)
-                coords2 = np.array(coords2)
+                    coords1 = np.array(coords1)
+                    coords2 = np.array(coords2)
 
-                # np.savetxt('file1.txt', coords1)
-                # np.savetxt('file2.txt', coords2)
+                    # np.savetxt('file1.txt', coords1)
+                    # np.savetxt('file2.txt', coords2)
 
-            elif method == 2:
-                coords1 = np.loadtxt('file1.txt')
-                coords2 = np.loadtxt('file2.txt')
+                elif method == 2:
+                    coords1 = np.loadtxt('file1.txt')
+                    coords2 = np.loadtxt('file2.txt')
 
 
-            figure = plt.figure(figsize=(11, 5), dpi=100)
-            # figure.patch.set_facecolor('#639DC1')
-            img1 = cv2.imread(self.root.path2)
-            img2 = cv2.imread(self.root.path3)
-            figure.add_subplot(121)
-            plt.imshow(img1)
-            plt.title('points in image 1')
-            plt.axis('off')
-            plt.plot(coords1[:, 0], coords1[:, 1], 'r*')
-            figure.add_subplot(122)
-            plt.imshow(img2)
-            plt.title('points in image 2')
-            plt.axis('off')
-            plt.plot(coords2[:, 0], coords2[:, 1], 'b*')
-            chart = FigureCanvasTkAgg(figure, self.root)
-            chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
+                figure = plt.figure(figsize=(11, 5), dpi=100)
+                # figure.patch.set_facecolor('#639DC1')
+                img1 = cv2.imread(self.root.path2)
+                img2 = cv2.imread(self.root.path3)
+                figure.add_subplot(121)
+                plt.imshow(img1)
+                plt.title('points in image 1')
+                plt.axis('off')
+                plt.plot(coords1[:, 0], coords1[:, 1], 'r*')
+                figure.add_subplot(122)
+                plt.imshow(img2)
+                plt.title('points in image 2')
+                plt.axis('off')
+                plt.plot(coords2[:, 0], coords2[:, 1], 'b*')
+                chart = FigureCanvasTkAgg(figure, self.root)
+                chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
 
-            #creating train and test dataset
-            rate = 0.2
-            random.seed(1234)
-            k = round(rate * coords1.shape[0])
-            test_ind = random.sample(range(0, coords1.shape[0]), k)
+                #creating train and test dataset
+                rate = 0.2
+                random.seed(1234)
+                k = round(rate * coords1.shape[0])
+                test_ind = random.sample(range(0, coords1.shape[0]), k)
 
-            # transforming coordinates from pixel to earth
+                # transforming coordinates from pixel to earth
 
-            coords2 = coord_transform(coords2, self.root.path4)
-            # creating test and train dataset     e = entry / t = target
-            test_e = coords1[test_ind, :]
-            test_t = coords2[test_ind, :]
-            train_e = np.delete(coords1, test_ind, axis=0)
-            train_t = np.delete(coords2, test_ind, axis=0)
-            func = self.om1.get()
+                coords2 = coord_transform(coords2, self.root.path4)
+                # creating test and train dataset     e = entry / t = target
+                test_e = coords1[test_ind, :]
+                test_t = coords2[test_ind, :]
+                train_e = np.delete(coords1, test_ind, axis=0)
+                train_t = np.delete(coords2, test_ind, axis=0)
+                func = self.om1.get()
 
-            res_train ,res_test , rmse_train , rmse_test = match(train_e, train_t, test_e, test_t, method=func)
-            self.root.text_box.configure(state = 'normal')
-            self.root.text_box.delete('0.0','end')
-            self.root.text_box.insert('end','********************** train_res **********************\n')
-            self.root.text_box.insert('end',f'{res_train}\n')
-            self.root.text_box.insert('end', '********************** test_res **********************\n')
-            self.root.text_box.insert('end', f'{res_test}\n')
-            self.root.text_box.insert('end', '********************** train_rmse **********************\n')
-            self.root.text_box.insert('end', f'{rmse_train}\n')
-            self.root.text_box.insert('end', '********************** test_rmse **********************\n')
-            self.root.text_box.insert('end', f'{rmse_test}\n')
-            self.root.text_box.configure(state='disable')
+                res_train ,res_test , rmse_train , rmse_test = match(train_e, train_t, test_e, test_t, method=func)
+                self.root.text_box.configure(state = 'normal')
+                self.root.text_box.delete('0.0','end')
+                self.root.text_box.insert('end','********************** train_res **********************\n')
+                self.root.text_box.insert('end',f'{res_train}\n')
+                self.root.text_box.insert('end', '********************** test_res **********************\n')
+                self.root.text_box.insert('end', f'{res_test}\n')
+                self.root.text_box.insert('end', '********************** train_rmse **********************\n')
+                self.root.text_box.insert('end', f'{rmse_train}\n')
+                self.root.text_box.insert('end', '********************** test_rmse **********************\n')
+                self.root.text_box.insert('end', f'{rmse_test}\n')
+                self.root.text_box.configure(state='disable')
+            except :
+                self.root.text_box.configure(state='normal')
+                self.root.text_box.delete('0.0', 'end')
+                self.root.text_box.insert('end', '********************** ERROR **********************\n')
+                self.root.text_box.insert('end', 'please check if you chose correct pixels !!!')
+                self.root.text_box.configure(state='disable')
         ####################  widgets  ####################
         self.btm1 = CTkButton(self , text='start matching',command = lambda :bc1(self))
         self.btm1.grid(row = 1 ,column= 1 , rowspan = 2 , padx = 20)
@@ -661,35 +668,42 @@ class frame5(CTkScrollableFrame):
         def sl6(value):
             self.lbl18.configure(text=str(int(self.sld6.get())))
         def bc2(self):
-            method = self.radiovar.get()
-            use_thr = self.checkvar1.get()
-            methods = [0 , 'robert' , 'prewitt' , 'sobel' , 'canny']
-            img = cv2.imread(self.root.path1)
-            if method == 1 :
-                thre = self.sld1.get()
-                edge = robert(img , thre , use_thr)
-            elif method == 2 :
-                thre = self.sld2.get()
-                edge = prewit(img , thre , use_thr)
-            elif method == 3 :
-                thre = self.sld3.get()
-                edge = sobel(img , thre , use_thr)
-            elif method == 4:
-                lower_ther = self.sld4.get()
-                upper_ther = self.sld5.get()
-                edge = canny(img , lower_ther , upper_ther)
-            figure = plt.figure(figsize=(11, 5), dpi=100)
-            # figure.patch.set_facecolor('#639DC1')
-            figure.add_subplot(121)
-            plt.imshow(img)
-            plt.title('original image')
-            plt.axis('off')
-            figure.add_subplot(122)
-            plt.imshow(edge)
-            plt.title(f'edges detected by method {methods[method]}')
-            plt.axis('off')
-            chart = FigureCanvasTkAgg(figure, self.root)
-            chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
+            try:
+                method = self.radiovar.get()
+                use_thr = self.checkvar1.get()
+                methods = [0 , 'robert' , 'prewitt' , 'sobel' , 'canny']
+                img = cv2.imread(self.root.path1)
+                if method == 1 :
+                    thre = self.sld1.get()
+                    edge = robert(img , thre , use_thr)
+                elif method == 2 :
+                    thre = self.sld2.get()
+                    edge = prewit(img , thre , use_thr)
+                elif method == 3 :
+                    thre = self.sld3.get()
+                    edge = sobel(img , thre , use_thr)
+                elif method == 4:
+                    lower_ther = self.sld4.get()
+                    upper_ther = self.sld5.get()
+                    edge = canny(img , lower_ther , upper_ther)
+                figure = plt.figure(figsize=(11, 5), dpi=100)
+                # figure.patch.set_facecolor('#639DC1')
+                figure.add_subplot(121)
+                plt.imshow(img)
+                plt.title('original image')
+                plt.axis('off')
+                figure.add_subplot(122)
+                plt.imshow(edge)
+                plt.title(f'edges detected by method {methods[method]}')
+                plt.axis('off')
+                chart = FigureCanvasTkAgg(figure, self.root)
+                chart.get_tk_widget().grid(row=0, column=0, rowspan=2, columnspan=4, pady=10, padx=100)
+            except:
+                self.root.text_box.configure(state='normal')
+                self.root.text_box.delete('0.0', 'end')
+                self.root.text_box.insert('end', '********************** ERROR **********************\n')
+                self.root.text_box.insert('end', 'please make sure you chose the method for edge detection')
+                self.root.text_box.configure(state='disable')
         ####################  widgets  ####################
         self.lbl2 = CTkLabel(self , text = 'edge detection')
         self.lbl2.grid(row = 2 , column = 0 , columnspan = 5 , pady = 10)
