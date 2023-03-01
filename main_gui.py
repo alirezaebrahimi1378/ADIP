@@ -285,10 +285,10 @@ class frame2(CTkFrame):
                 self.coordsx.append(X_coordinate)
                 self.coordsy.append(Y_coordinate)
                 counter = len(self.coordsx)
-                coords = np.vstack((np.array(self.coordsx) ,np.array(self.coordsy)))
-                self.coords = np.transpose(coords)
-                coords2 = self.coords[::2]
-                coords1 = self.coords[1::2]
+                self.coords = np.vstack((np.array(self.coordsx) ,np.array(self.coordsy)))
+                self.Coords = np.transpose(self.coords)
+                coords2 = self.Coords[::2]
+                coords1 = self.Coords[1::2]
                 if counter % 2 == 0:
                     self.root.text_box.insert(index = 'end' ,text=f'coordinates of point in image one : [{self.coordsx[-2]},{self.coordsy[-2]}] / coordinates of point in image two : [{self.coordsx[-1]},{self.coordsy[-1]}]\n')
                     coord = np.array(coords1)
